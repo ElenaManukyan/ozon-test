@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Progress Test</title>
+    <style>
+        .downloadContainer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            gap: 40px;
+            max-width: 320px;
+            min-height: 100vh;
+            background-color: #fff;
+        }
+
+        .downloadContainer span {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            font-size: 14px;
+            font-family: sans-serif;
+        }
+
+        @media screen and (min-width: 568px) {
+            .downloadContainer {
+                max-width: 568px;
+                min-height: 320px;
+                flex-direction: row;
+                gap: 100px;
+            }
+        }
+
+        .downloadPage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            font-family: sans-serif;
+            font-size: 14px;
+        }
+
+        .progressElement.hidden {
+            visibility: hidden;
+        }
+
+        .loadingRing {
+            fill: none;
+            stroke-width: 10;
+            transform: rotate(-90deg); 
+        }
+
+        .loadingRing.animated {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(270deg); }
+        }
+
+        .loadingCircle {
+            stroke: #e6e9ef;
+        }
+
+        .loadingCircleProgress {
+            stroke: #005cff;
+        }
+
+        .controlPanel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .controlItem {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        .controlItem input {
+            width: 50px;
+            height: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .controlItem input[type="number"] {
+            border-radius: 15px;
+            border: 1px solid #000;
+            text-align: center;
+        }
+
+        .controlItem input[type="checkbox"] {
+            appearance: none;
+            background-color: #e6e9ef;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .controlItem input[type="checkbox"]:checked {
+            background-color: #005eff;
+        }
+
+        .controlItem input[type="checkbox"]::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            top: 2.5px;
+            left: 2px;
+        }
+
+
+        .controlItem input[type="checkbox"]:checked::before {
+            transform: translateX(25px);
+        }
+    </style>
+</head>
+<body class="downloadPage">
+
+<div class="downloadContainer">
+    <span>Progress</span>
+    <div class="progressElement" id="progressElement">
+        <svg class="loadingRing" width="120" height="120">
+            <circle class="loadingCircle" cx="60" cy="60" r="52"></circle>
+            <circle class="loadingCircleProgress" id="ring" cx="60" cy="60" r="52"></circle>
+        </svg>
+    </div>
+
+    <div class="controlPanel">
+        <div class="controlItem">
+            <input type="number" id="valueInput" value="75" min="0" max="100">
+            <label>Value</label>
+        </div>
+        <div class="controlItem">
+            <input type="checkbox" id="animatingSwitch">
+            <label>Animate</label>
+        </div>
+        <div class="controlItem">
+            <input type="checkbox" id="hideSwitch">
+            <label>Hide</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ringDownload = document.getElementById('ring');
+    const ringProgress = document.getElementById('progressElement');
+    const svgEl = ringDownload.parentElement;
+
+    const ringRadius = ringDownload.r.baseVal.value;
+    const lengthCircle = 2 * Math.PI * ringRadius;
+
+    ringDownload.style.strokeDasharray = `${lengthCircle} ${lengthCircle}`;
+
+    function changePercent(percent) {
+        const offset = lengthCircle - (percent / 100 * lengthCircle);
+        ringDownload.style.strokeDashoffset = offset;
+    }
+
+    const START_PERCENT = 75;
+    changePercent(START_PERCENT);
+
+    document.getElementById('valueInput').addEventListener('input', (e) => {
+        changePercent(e.target.value);
+    });
+
+    document.getElementById('animatingSwitch').addEventListener('change', (e) => {
+        svgEl.classList.toggle('animated', e.target.checked);
+    });
+
+    document.getElementById('hideSwitch').addEventListener('change', (e) => {
+        ringProgress.classList.toggle('hidden', e.target.checked);
+    });
+</script>
+
+</body>
+</html>

@@ -44,3 +44,4 @@ Live version:
 * Vanilla JavaScript (no dependencies)
 
 <img width="752" height="444" alt="image" src="https://github.com/user-attachments/assets/76264e36-5ebc-40bb-849f-38eeb8c2c594" />
+<img width="500" height="653" alt="image" src="https://github.com/user-attachments/assets/451aee0a-4856-4d7d-a0e9-cae13a85e9a3" />

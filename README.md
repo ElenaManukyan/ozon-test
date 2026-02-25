@@ -16,9 +16,7 @@ Built with **pure HTML + CSS + Vanilla JavaScript**. without frameworks and libr
 
 ## 🎯 Demo
 
-Live version:  
-→ https://yourusername.github.io/progress-circle/  
-*(update link after you deploy to GitHub Pages)*
+(Demo)[https://elenamanukyan.github.io/ozon-test/]
 
 ## 📋 Requirements fulfilled
 

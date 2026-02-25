@@ -49,13 +49,13 @@
             visibility: hidden;
         }
 
-        .loadingRing {
+        .loadRingContainer {
             fill: none;
             stroke-width: 10;
             transform: rotate(-90deg); 
         }
 
-        .loadingRing.animated {
+        .loadRingContainer.animated {
             animation: spin 2s linear infinite;
         }
 
@@ -63,21 +63,21 @@
             100% { transform: rotate(270deg); }
         }
 
-        .loadingCircle {
+        .circleAll {
             stroke: #e6e9ef;
         }
 
-        .loadingCircleProgress {
+        .circleFilled {
             stroke: #005cff;
         }
 
-        .controlPanel {
+        .controlPanelForRingProgress {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .controlItem {
+        .controlItemForRingProgress {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -87,20 +87,20 @@
             -webkit-appearance: none;
         }
 
-        .controlItem input {
+        .controlItemForRingProgress input {
             width: 50px;
             height: 25px;
             margin: 0;
             padding: 0;
         }
 
-        .controlItem input[type="number"] {
+        .controlItemForRingProgress input[type="number"] {
             border-radius: 15px;
             border: 1px solid #000;
             text-align: center;
         }
 
-        .controlItem input[type="checkbox"] {
+        .controlItemForRingProgress input[type="checkbox"] {
             appearance: none;
             background-color: #e6e9ef;
             border-radius: 20px;
@@ -108,11 +108,11 @@
             cursor: pointer;
         }
 
-        .controlItem input[type="checkbox"]:checked {
+        .controlItemForRingProgress input[type="checkbox"]:checked {
             background-color: #005eff;
         }
 
-        .controlItem input[type="checkbox"]::before {
+        .controlItemForRingProgress input[type="checkbox"]::before {
             content: "";
             position: absolute;
             width: 20px;
@@ -124,7 +124,7 @@
         }
 
 
-        .controlItem input[type="checkbox"]:checked::before {
+        .controlItemForRingProgress input[type="checkbox"]:checked::before {
             transform: translateX(25px);
         }
     </style>
@@ -134,24 +134,24 @@
 <div class="downloadContainer">
     <span>Progress</span>
     <div class="progressElement" id="progressElement">
-        <svg class="loadingRing" width="120" height="120">
-            <circle class="loadingCircle" cx="60" cy="60" r="52"></circle>
-            <circle class="loadingCircleProgress" id="ring" cx="60" cy="60" r="52"></circle>
+        <svg class="loadRingContainer" width="120" height="120">
+            <circle class="circleAll" cx="60" cy="60" r="52"></circle>
+            <circle class="circleFilled" id="ring" cx="60" cy="60" r="52"></circle>
         </svg>
     </div>
 
-    <div class="controlPanel">
-        <div class="controlItem">
+    <div class="controlPanelForRingProgress">
+        <div class="controlItemForRingProgress">
             <input type="number" id="valueInput" value="75" min="0" max="100">
-            <label>Value</label>
+            <label for="valueInput">Value</label>
         </div>
-        <div class="controlItem">
+        <div class="controlItemForRingProgress">
             <input type="checkbox" id="animatingSwitch">
-            <label>Animate</label>
+            <label  for="animatingSwitch">Animate</label>
         </div>
-        <div class="controlItem">
+        <div class="controlItemForRingProgress">
             <input type="checkbox" id="hideSwitch">
-            <label>Hide</label>
+            <label for="hideSwitch">Hide</label>
         </div>
     </div>
 </div>
@@ -164,26 +164,40 @@
     const ringRadius = ringDownload.r.baseVal.value;
     const lengthCircle = 2 * Math.PI * ringRadius;
 
+    const stateProgressBlock = {
+        currentState: 'Normal',
+        animatedState: (targetChecked) => svgEl.classList.toggle('animated', targetChecked),
+        hiddenState: (targetChecked) => ringProgress.classList.toggle('hidden', targetChecked),
+    };
+
     ringDownload.style.strokeDasharray = `${lengthCircle} ${lengthCircle}`;
 
-    function changePercent(percent) {
-        const offset = lengthCircle - (percent / 100 * lengthCircle);
-        ringDownload.style.strokeDashoffset = offset;
+    function changeArcSize(sizeOfArc) {
+        if (stateProgressBlock.currentState === 'Normal') {
+            const offset = lengthCircle - (sizeOfArc / 100 * lengthCircle);
+            ringDownload.style.strokeDashoffset = offset;
+        }
     }
 
-    const START_PERCENT = 75;
-    changePercent(START_PERCENT);
+    const START_SIZE = 75;
+    changeArcSize(START_SIZE);
 
     document.getElementById('valueInput').addEventListener('input', (e) => {
-        changePercent(e.target.value);
+        if (e.target.value >= 0 && e.target.value <=100) {
+            changeArcSize(e.target.value);
+        } else {
+            changeArcSize(0);
+        }
     });
 
     document.getElementById('animatingSwitch').addEventListener('change', (e) => {
-        svgEl.classList.toggle('animated', e.target.checked);
+        stateProgressBlock.currentState = e.target.checked ? 'Animated' : 'Normal';
+        stateProgressBlock.animatedState(e.target.checked);
     });
 
     document.getElementById('hideSwitch').addEventListener('change', (e) => {
-        ringProgress.classList.toggle('hidden', e.target.checked);
+        stateProgressBlock.currentState = e.target.checked ? 'Hidden' : 'Normal';
+        stateProgressBlock.hiddenState(e.target.checked);
     });
 </script>
 

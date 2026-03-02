@@ -3,20 +3,19 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Progress Test</title>
-    <style>
-        
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="downloadPage">
 
 <div class="downloadContainer">
     <span>Progress</span>
-    <div class="progressElement" id="progressElement">
+    <div id="progressComponentContainer"></div>
+    <!-- <div class="progressElement" id="progressElement">
         <svg class="loadRingContainer" width="120" height="120">
             <circle class="circleAll" cx="60" cy="60" r="52"></circle>
             <circle class="circleFilled" id="ring" cx="60" cy="60" r="52"></circle>
         </svg>
-    </div>
+    </div> -->
 
     <div class="controlPanelForRingProgress">
         <div class="controlItemForRingProgress">
@@ -34,49 +33,30 @@
     </div>
 </div>
 
-<script>
-    const ringDownload = document.getElementById('ring');
-    const ringProgress = document.getElementById('progressElement');
-    const svgEl = ringDownload.parentElement;
+<script type="module">
+    import { ProgressRingElement } from './ProgressRingElement.js';
 
-    const ringRadius = ringDownload.r.baseVal.value;
-    const lengthCircle = 2 * Math.PI * ringRadius;
+    const progressComponentContainer = document.getElementById('progressComponentContainer');
+    const instanceProgressComponent = new ProgressRingElement(progressComponentContainer);
 
-    const stateProgressBlock = {
-        currentState: 'Normal',
-        animatedState: (targetChecked) => svgEl.classList.toggle('animated', targetChecked),
-        hiddenState: (targetChecked) => ringProgress.classList.toggle('hidden', targetChecked),
-    };
+    const percentOfRing = document.getElementById('valueInput');
+    const ringGo = document.getElementById('animatingSwitch');
+    const ringHide = document.getElementById('hideSwitch');
 
-    ringDownload.style.strokeDasharray = `${lengthCircle} ${lengthCircle}`;
-
-    function changeArcSize(sizeOfArc) {
-        if (stateProgressBlock.currentState === 'Normal') {
-            const offset = lengthCircle - (sizeOfArc / 100 * lengthCircle);
-            ringDownload.style.strokeDashoffset = offset;
-        }
-    }
-
-    const START_SIZE = 75;
-    changeArcSize(START_SIZE);
-
-    document.getElementById('valueInput').addEventListener('input', (e) => {
-        if (e.target.value >= 0 && e.target.value <=100) {
-            changeArcSize(e.target.value);
-        } else {
-            changeArcSize(0);
-        }
+    percentOfRing.addEventListener('input', (e) => {
+        instanceProgressComponent.setValue(e.target.value);
     });
 
-    document.getElementById('animatingSwitch').addEventListener('change', (e) => {
-        stateProgressBlock.currentState = e.target.checked ? 'Animated' : 'Normal';
-        stateProgressBlock.animatedState(e.target.checked);
+    ringGo.addEventListener('change', (e) => {
+        instanceProgressComponent.switchAnimated(e.target.checked);
     });
 
-    document.getElementById('hideSwitch').addEventListener('change', (e) => {
-        stateProgressBlock.currentState = e.target.checked ? 'Hidden' : 'Normal';
-        stateProgressBlock.hiddenState(e.target.checked);
+    ringHide.addEventListener('change', (e) => {
+        instanceProgressComponent.switchHidden(e.target.checked);
     });
+    
+    instanceProgressComponent.setValue(75);
+    percentOfRing.value = 75;
 </script>
 
 </body>

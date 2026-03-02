@@ -39,7 +39,11 @@
     font-size: 14px;
 }
 
-.progressElement.hidden {
+/* .progressElement.hidden {
+    visibility: hidden;
+} */
+
+.loadRingContainer.hidden {
     visibility: hidden;
 }
 

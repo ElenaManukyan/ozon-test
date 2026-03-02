@@ -16,7 +16,7 @@ Built with **pure HTML + CSS + Vanilla JavaScript**. without frameworks and libr
 
 ## 🎯 Demo
 
-[Demo](https://elenamanukyan.github.io/ozon-test/)
+(Demo](https://elenamanukyan.github.io/ozon-test/)
 
 ## 📋 Requirements fulfilled
 

@@ -3,8 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Progress Test</title>
-    <link rel="stylesheet" href="style.css">
-    components/progress/index.html
+    <link rel="stylesheet" href="./components/progress/style.css">
 </head>
 <body class="downloadPage">
 
@@ -29,7 +28,7 @@
 </div>
 
 <script type="module">
-    import { ProgressRingElement } from './ProgressRingElement.js';
+    import { ProgressRingElement } from './components/progress/ProgressRingElement.js';
 
     const progressComponentContainer = document.getElementById('progressComponentContainer');
     const instanceProgressComponent = new ProgressRingElement(progressComponentContainer);

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Progress Test</title>
+    <style>
+        
+    </style>
+</head>
+<body class="downloadPage">
+
+<div class="downloadContainer">
+    <span>Progress</span>
+    <div class="progressElement" id="progressElement">
+        <svg class="loadRingContainer" width="120" height="120">
+            <circle class="circleAll" cx="60" cy="60" r="52"></circle>
+            <circle class="circleFilled" id="ring" cx="60" cy="60" r="52"></circle>
+        </svg>
+    </div>
+
+    <div class="controlPanelForRingProgress">
+        <div class="controlItemForRingProgress">
+            <input type="number" id="valueInput" value="75" min="0" max="100">
+            <label for="valueInput">Value</label>
+        </div>
+        <div class="controlItemForRingProgress">
+            <input type="checkbox" id="animatingSwitch">
+            <label  for="animatingSwitch">Animate</label>
+        </div>
+        <div class="controlItemForRingProgress">
+            <input type="checkbox" id="hideSwitch">
+            <label for="hideSwitch">Hide</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ringDownload = document.getElementById('ring');
+    const ringProgress = document.getElementById('progressElement');
+    const svgEl = ringDownload.parentElement;
+
+    const ringRadius = ringDownload.r.baseVal.value;
+    const lengthCircle = 2 * Math.PI * ringRadius;
+
+    const stateProgressBlock = {
+        currentState: 'Normal',
+        animatedState: (targetChecked) => svgEl.classList.toggle('animated', targetChecked),
+        hiddenState: (targetChecked) => ringProgress.classList.toggle('hidden', targetChecked),
+    };
+
+    ringDownload.style.strokeDasharray = `${lengthCircle} ${lengthCircle}`;
+
+    function changeArcSize(sizeOfArc) {
+        if (stateProgressBlock.currentState === 'Normal') {
+            const offset = lengthCircle - (sizeOfArc / 100 * lengthCircle);
+            ringDownload.style.strokeDashoffset = offset;
+        }
+    }
+
+    const START_SIZE = 75;
+    changeArcSize(START_SIZE);
+
+    document.getElementById('valueInput').addEventListener('input', (e) => {
+        if (e.target.value >= 0 && e.target.value <=100) {
+            changeArcSize(e.target.value);
+        } else {
+            changeArcSize(0);
+        }
+    });
+
+    document.getElementById('animatingSwitch').addEventListener('change', (e) => {
+        stateProgressBlock.currentState = e.target.checked ? 'Animated' : 'Normal';
+        stateProgressBlock.animatedState(e.target.checked);
+    });
+
+    document.getElementById('hideSwitch').addEventListener('change', (e) => {
+        stateProgressBlock.currentState = e.target.checked ? 'Hidden' : 'Normal';
+        stateProgressBlock.hiddenState(e.target.checked);
+    });
+</script>
+
+</body>
+</html>
